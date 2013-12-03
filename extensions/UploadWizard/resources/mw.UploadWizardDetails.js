@@ -689,11 +689,13 @@ mw.UploadWizardDetails.prototype = {
 	 */
 	updateMap: function() {
 		var _this = this;
-		var map_initialized = false;
-		var marker;
-		var map;
+		var marker = null;
+		var map = null;
+		var zoom = 15;
 		function onMapClick(e) {
-			map.removeLayer(marker);
+			if (marker) {
+				map.removeLayer(marker);
+			}
 			marker = new L.Marker(e.latlng, {draggable:true});
 			marker.on('dragend', onMarkerDragEnd);
 			_this.$latInput.val(e.latlng.lat);
@@ -707,22 +709,23 @@ mw.UploadWizardDetails.prototype = {
 		var showMapClick = function(e) {
 			e.stopPropagation();
 			e.preventDefault();
-			if(!map_initialized) {				
+			if(!map) {				
 				_this.$locationMapContainer.show();
 				_this.$locationMapContainer.addClass("map-opened");
 				_this.$showMapLink.text(mw.message( 'mwe-upwiz-location-hidemap' ).text());
-				L.Icon.Default.imagePath = "../Extensions/UploadWizard/Resources/leaflet/images/";
-				var location = [_this.$latInput.val(), _this.$lonInput.val()];
-				map = L.map('map_'+_this.titleId, {
-					zoom: 13,
-					center: location
-				});
+				L.Icon.Default.imagePath = "../extensions/UploadWizard/resources/leaflet/images/";
+				map = L.map('map_'+_this.titleId);
+				if(_this.$latInput.val() && _this.$lonInput.val()) {
+					var location = [_this.$latInput.val(), _this.$lonInput.val()];
+					map.setView(location, zoom);
+					marker = new L.Marker(location, {draggable:true});
+					map.addLayer(marker);
+				} else {
+					map.locate({setView: true, maxZoom: zoom});
+				}
 				var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 				var osm = new L.TileLayer(osmUrl);		
 				map.addLayer(osm);
-				marker = new L.Marker(location, {draggable:true});
-				map.addLayer(marker);
-				map_initialized = true;
 				map.on('click', onMapClick);
 				marker.on('dragend', onMarkerDragEnd);
 			} else {

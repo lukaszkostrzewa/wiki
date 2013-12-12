@@ -18,9 +18,8 @@ CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_campaigns (
 
 -- OSM MAP MODIFICATION
 CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_desired_photo (
-  dp_id						INTEGER	PRIMARY KEY	NOT NULL AUTO_INCREMENT,
-  dp_name 					VARCHAR(100) 		NOT NULL,
-  dp_location 				point 				NOT NULL
+  dp_location 				point PRIMARY KEY 	NOT NULL,
+  dp_name 					VARCHAR(100) 		NOT NULL
 ) /*$wgDBTableOptions*/, ENGINE=MyISAM;
 
 CREATE SPATIAL INDEX /*i*/uw_desired_photo_index ON /*_*/uw_desired_photo (dp_location);

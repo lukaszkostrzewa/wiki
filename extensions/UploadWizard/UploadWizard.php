@@ -69,10 +69,12 @@ $wgAutoloadClasses += array(
 	'SpecialCampaigns' => $wgUpwizDir . '/includes/specials/SpecialCampaigns.php',
 
 	// API
-	'ApiQueryAllCampaigns' => $wgUpwizDir . '/includes/ApiQueryAllCampaigns.php'
+	'ApiQueryAllCampaigns' => $wgUpwizDir . '/includes/ApiQueryAllCampaigns.php',
+	'ApiQueryNearestPoints' => $wgUpwizDir . '/includes/ApiQueryNearestPoints.php'
 );
 
 $wgAPIListModules['allcampaigns'] = 'ApiQueryAllCampaigns';
+$wgAPIListModules['nearestpoints'] = 'ApiQueryNearestPoints';
 // $wgAPIModules['titlecheck'] = 'ApiTitleCheck';
 // $wgAPIListModules['titlecheck'] = 'ApiTitleCheck';
 

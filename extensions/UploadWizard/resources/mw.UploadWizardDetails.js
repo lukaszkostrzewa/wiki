@@ -719,6 +719,7 @@ mw.UploadWizardDetails.prototype = {
 					var location = [_this.$latInput.val(), _this.$lonInput.val()];
 					map.setView(location, zoom);
 					marker = new L.Marker(location, {draggable:true});
+					marker.on('dragend', onMarkerDragEnd);
 					map.addLayer(marker);
 				} else {
 					map.locate({setView: true, maxZoom: zoom});
@@ -727,7 +728,6 @@ mw.UploadWizardDetails.prototype = {
 				var osm = new L.TileLayer(osmUrl);		
 				map.addLayer(osm);
 				map.on('click', onMapClick);
-				marker.on('dragend', onMarkerDragEnd);
 			} else {
 				if (_this.$locationMapContainer.hasClass("map-opened")) {
 					_this.$locationMapContainer.hide();

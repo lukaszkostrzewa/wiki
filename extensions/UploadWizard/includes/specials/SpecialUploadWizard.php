@@ -464,6 +464,7 @@ class SpecialUploadWizard extends SpecialPage {
 		
 		// OSM MODIFICATION
 		.     '<div class="mwe-upwiz-stepdiv" id="mwe-upwiz-stepdiv-map" style="display:none;">'
+		.       '<div id="mwe-upwiz-map"></div>'
 		.       '<div class="mwe-upwiz-buttons">'
 		.          '<button class="mwe-upwiz-button-next">' . $this->msg( "mwe-upwiz-next" )->text()  . '</button>'
 		.       '</div>'

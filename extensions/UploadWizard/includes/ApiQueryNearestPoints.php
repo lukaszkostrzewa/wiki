@@ -39,6 +39,12 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 		$lat = (float)$params['lat'];
 		$lon = (float)$params['lon'];
 		$myLocation = "GeomFromText('Point(". $lat ." ". $lon .")')";
+		
+		$dbType = $this->getDB()->getType();
+		if ($dbType == "mysql") {
+		} else if ($dbType == "sqlite") {
+		} else { // postgres
+		}
 
 		/*
 			SELECT * 
@@ -55,7 +61,8 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 		$this->addFields( array(
 			'dp_name',
 			'x(dp_location) AS lat',
-			'y(dp_location) AS lon'
+			'y(dp_location) AS lon',
+			'dp_article'
 		) );
 
 		wfProfileIn( __METHOD__ . '-sql' );
@@ -84,6 +91,11 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 				'lon',
 				$row->lon
 			);
+			$result->addValue(
+				$path,
+				'article',
+				$row->dp_article
+			);
 		}
 		wfProfileOut( __METHOD__ );
 	}
@@ -99,8 +111,8 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 				ApiBase::PARAM_MAX => 90
 			),
 			'lon' => array(
-				ApiBase::PARAM_MIN => -90,
-				ApiBase::PARAM_MAX => 90
+				ApiBase::PARAM_MIN => -180,
+				ApiBase::PARAM_MAX => 180
 			)
 		);
 	}
@@ -119,7 +131,7 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 	public function getExamples() {
 		return array(
 			'api.php?action=query&list=nearestpoints&uplat=51.507222&uplon=-0.1275' 
-				=> 'Get the closest points to london'
+				=> 'Get the closest points to London'
 		);
 	}
 

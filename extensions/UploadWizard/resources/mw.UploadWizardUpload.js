@@ -597,7 +597,6 @@ mw.UploadWizardUpload.prototype = {
 	 * @param {Object} (as returned by jpegmeta)
 	 */
 	extractMetadataFromJpegMeta: function( meta ) {
-		console.log(meta);
 		if ( meta !== undefined && meta !== null && typeof meta === 'object' ) {
 			if ( this.imageinfo === undefined ) {
 				this.imageinfo = {};
@@ -660,7 +659,6 @@ mw.UploadWizardUpload.prototype = {
 	 */
 	extractImageInfo: function( imageinfo ) {
 		var _this = this;
-		console.log(imageinfo);
 		for ( var key in imageinfo ) {
 			// we get metadata as list of key-val pairs; convert to object for easier lookup. Assuming that EXIF fields are unique.
 			if ( key == 'metadata' ) {

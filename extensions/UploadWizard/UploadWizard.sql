@@ -17,10 +17,14 @@ CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_campaigns (
 --CREATE INDEX /*i*/uw_campaigns_enabled ON /*_*/uw_campaigns (campaign_enabled, campaign_id);
 
 -- OSM MAP MODIFICATION
+DROP TABLE IF EXISTS /*$wgDBprefix*/uw_desired_photo;
 CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_desired_photo (
   dp_location 				point PRIMARY KEY 	NOT NULL,
-  dp_name 					VARCHAR(100) 		NOT NULL
+  dp_name 					VARCHAR(100) 		NOT NULL,
+  dp_article				VARCHAR(255)		NOT NULL,
+  dp_country				VARCHAR(100)		NOT NULL,
+  dp_municipality			VARCHAR(50)			NOT NULL
 ) /*$wgDBTableOptions*/, ENGINE=MyISAM;
 
-CREATE SPATIAL INDEX /*i*/uw_desired_photo_index ON /*_*/uw_desired_photo (dp_location);
+--CREATE SPATIAL INDEX /*i*/uw_desired_photo_index ON /*_*/uw_desired_photo (dp_location);
 -- END OSM MAP MODIFICATION

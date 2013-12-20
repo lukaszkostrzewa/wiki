@@ -1163,8 +1163,6 @@ mw.UploadWizardDetails.prototype = {
 			m = _this.upload.imageinfo.metadata;
 
 		if ( m ) {
-			console.log("Number( m.gpslatitude ): " + Number( m.gpslatitude ) + ", m.gpslatitude: " + m.gpslatitude);
-			console.log("Number( m.gpslongitude ): " + Number( m.gpslongitude ) + ", m.gpslongitude: " + m.gpslongitude);
 			// Prefill useful stuff only
 			if ( Number( m.gpslatitude ) && Number ( m.gpslongitude ) ) {
 				_this.$latInput.val( m.gpslatitude );
@@ -1175,7 +1173,6 @@ mw.UploadWizardDetails.prototype = {
 				this.upload.file.location.latitude &&
 				this.upload.file.location.longitude
 			) {
-				console.log("if #2");
 				_this.$latInput.val( this.upload.file.location.latitude );
 				_this.$lonInput.val( this.upload.file.location.longitude );
 			}

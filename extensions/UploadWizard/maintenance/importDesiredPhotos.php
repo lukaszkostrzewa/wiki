@@ -39,6 +39,7 @@ class ImportDesiredPhotos extends Maintenance {
 	 * @var DatabaseBase
 	 */
 	private $dbr = null;
+	private $tableName = "uw_desired_photo";
 	private $apiUrl = 'http://toolserver.org/~erfgoed/api/api.php?action=search&srwithoutimages=1&userlang=en&format=xml';
 
 	public function __construct() {
@@ -49,18 +50,39 @@ class ImportDesiredPhotos extends Maintenance {
 	}
 
 	public function execute() {
-		header('Content-type: text/html; charset=utf-8');
-		$options = '&srcountry=' . $this->getOption('country');
-		$options .= '&srmunicipality=' . $this->getOption('municipality');
+		$country = $this->getOption('country');
+		$municipality = $this->getOption('municipality');
+		$options = '&srcountry=' . $country;
+		$options .= '&srmunicipality=' . $municipality;
 		$this->apiUrl .= $options;
 		
 		$this->dbr = wfGetDB(DB_MASTER);
+		
+		$this->output( "Cleaning database...\n" );
+		// delete old entries
+		if ($municipality != "") {
+			$this->dbr->delete($this->tableName, array( 'dp_municipality' => $municipality ));
+		} else if ($country != "") {
+			$this->dbr->delete($this->tableName, array( 'dp_country' => $country ));
+		} else {
+			$this->dbr->delete($this->tableName, "*"); // delete all
+		}
+
 		$this->output( "Starting to import...\n" );
+		$dbType = $this->dbr->getType(); // "mysql", "postgres" ("pgsql" or "PostgreSQL" in older versions), "sqlite"
 		
 		$monuments = simplexml_load_file($this->apiUrl);
 		$hasNextPage = true;
+		$hasAtLeastOne = false;
 		$pages = 1;
-		$query = "INSERT IGNORE INTO uw_desired_photo (dp_location, dp_name) VALUES ";
+		
+		if ($dbType === "mysql") {
+			$query = "INSERT IGNORE INTO ". $this->tableName ." (dp_location, dp_name, dp_article, dp_country, dp_municipality) VALUES ";
+		} else if ($dbType === "sqlite") {
+			$query = "";
+		} else { // postgres
+			$query = "";
+		}
 		
 		while ($hasNextPage) {
 			$this->output("Importing page " . $pages++ . "\n");
@@ -84,16 +106,31 @@ class ImportDesiredPhotos extends Maintenance {
 					continue;
 				}
 				
+				$values = array();
 				$location = "GeomFromText('POINT(". (float)$monument["lat"] ." ". (float)$monument["lon"] .")')";
-				$name = $monument["name"]; // todo: encoding
-				$query .= "(". $location .", '". $name ."'),";
+				$name = "'".$monument["name"]."'"; // todo: encoding
+				
+				if($monument['monument_article'] != "") {
+					$article = "'".$monument['monument_article']."'";
+				} else {
+					$article = $name;
+				}
+				
+				$country = "'".$monument['country']."'";
+				$municipality = "'".$monument['municipality']."'";
+				array_push($values, $location, $name, $article, $country, $municipality);
+				$query .= "(". implode(",", $values) ."),";
+				$hasAtLeastOne = true;
 			}
 		}
 		
-		$query = substr($query, 0, -1);
-		//echo $query . "\n";
-		$this->dbr->query($query);
-		$this->output("Affected rows: " . $this->dbr->affectedRows());
+		if($hasAtLeastOne) {
+			$query = substr($query, 0, -1);
+			$this->dbr->query($query);
+			$this->output("Affected rows: " . $this->dbr->affectedRows());
+		} else {
+			$this->output("No monuments found.");
+		}
 	}
 }
 

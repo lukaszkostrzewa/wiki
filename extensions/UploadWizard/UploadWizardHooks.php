@@ -100,6 +100,9 @@ class UploadWizardHooks {
 				// MAP MODIFICATION
 				// leaflet - the map
 				'resources/leaflet/leaflet.js',
+				// geosearch plugin
+				'resources/leaflet/geosearch/l.control.geosearch.js',
+				'resources/leaflet/geosearch/l.geosearch.provider.openstreetmap.js',
 			),
 			'styles' => array(
 				'resources/uploadWizard.css',
@@ -110,6 +113,8 @@ class UploadWizardHooks {
 				// MAP MODIFICATION
 				// leaflet - the map
 				'resources/leaflet/leaflet.css',
+				// geosearch plugin
+				'resources/leaflet/geosearch/l.geosearch.css',
 				//'resources/leaflet/leaflet.ie.css', // todo: how to do a conditional import?
 			),
 			'messages' => array(

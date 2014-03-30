@@ -36,26 +36,22 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 		wfProfileIn( __METHOD__ );
 		$params = $this->extractRequestParams();
 
-		$lat = (float)$params['lat'];
-		$lon = (float)$params['lon'];
-		$myLocation = "GeomFromText('Point(". $lat ." ". $lon .")')";
+		$x1 = (float)$params['swlat'];
+		$y1 = (float)$params['swlon'];
+		$x2 = (float)$params['nelat'];
+		$y2 = (float)$params['nelon'];
+		$poly = "GeomFromText('POLYGON(($x1 $y1, $x2 $y1, $x2 $y2, $x1 $y2, $x1 $y1))')";
 		
 		$dbType = $this->getDB()->getType();
 		if ($dbType == "mysql") {
+			$this->addWhere( "MBRCONTAINS($poly, dp_location)" );
 		} else if ($dbType == "sqlite") {
 		} else { // postgres
 		}
 
-		/*
-			SELECT * 
-			FROM table AS a
-			WHERE ST_DWithin (mylocation, a.LatLong, 10000) -- 10km
-			ORDER BY ST_Distance (mylocation, a.LatLong)
-			LIMIT 20
-		*/
 		$this->addTables( 'uw_desired_photo' );
 		//$this->addWhere( "ST_DWithin (". $myLocation .", dp_location, 10000)" );
-		$this->addOption( 'LIMIT', 20 );
+		$this->addOption( 'LIMIT', 40 );
 		//$this->addOption( 'ORDER BY', "ST_Distance (". $myLocation .", dp_location)" );
 
 		$this->addFields( array(
@@ -106,11 +102,19 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 
 	public function getAllowedParams() {
 		return array(
-			'lat' => array(
+			'swlat' => array(
 				ApiBase::PARAM_MIN => -90,
 				ApiBase::PARAM_MAX => 90
 			),
-			'lon' => array(
+			'swlon' => array(
+				ApiBase::PARAM_MIN => -180,
+				ApiBase::PARAM_MAX => 180
+			),
+			'nelat' => array(
+				ApiBase::PARAM_MIN => -90,
+				ApiBase::PARAM_MAX => 90
+			),
+			'nelon' => array(
 				ApiBase::PARAM_MIN => -180,
 				ApiBase::PARAM_MAX => 180
 			)
@@ -119,8 +123,10 @@ class ApiQueryNearestPoints extends ApiQueryBase {
 
 	public function getParamDescription() {
 		return array(
-			'lat' => 'Latitude',
-			'lon' => 'Longitude'
+			'swlat' => 'Latitude of south-west point',
+			'swlon' => 'Longitude of south-west point',
+			'nelat' => 'Latitude of north-east point',
+			'nelon' => 'Longitude of north-east point'
 		);
 	}
 

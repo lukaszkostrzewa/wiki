@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_campaigns (
   campaign_enabled         TINYINT             NOT NULL default '0'
 ) /*$wgDBTableOptions*/;
 
---CREATE UNIQUE INDEX /*i*/uw_campaigns_name ON /*_*/uw_campaigns (campaign_name);
+CREATE UNIQUE INDEX /*i*/uw_campaigns_name ON /*_*/uw_campaigns (campaign_name);
 -- Since we sort on campaign_id for pagination
---CREATE INDEX /*i*/uw_campaigns_enabled ON /*_*/uw_campaigns (campaign_enabled, campaign_id);
+CREATE INDEX /*i*/uw_campaigns_enabled ON /*_*/uw_campaigns (campaign_enabled, campaign_id);
 
 -- OSM MAP MODIFICATION
 DROP TABLE IF EXISTS /*$wgDBprefix*/uw_desired_photo;
@@ -26,5 +26,5 @@ CREATE TABLE IF NOT EXISTS /*$wgDBprefix*/uw_desired_photo (
   dp_municipality			VARCHAR(50)			NOT NULL
 ) /*$wgDBTableOptions*/, ENGINE=MyISAM;
 
---CREATE SPATIAL INDEX /*i*/uw_desired_photo_index ON /*_*/uw_desired_photo (dp_location);
+CREATE SPATIAL INDEX /*i*/uw_desired_photo_index ON /*_*/uw_desired_photo (dp_location);
 -- END OSM MAP MODIFICATION

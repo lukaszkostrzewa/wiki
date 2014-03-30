@@ -42,20 +42,22 @@ mw.UploadWizardMap = function( selector ) {
 	*/
 	
 	var onMoveEnd = function(e) {
-		var c = map.getCenter();
+		var b = map.getBounds();
 		mw.loader.using('mediawiki.api', function() {
 			(new mw.Api()).get( {
 				action: 'query',
 				list: 'nearestpoints',
-				uplat: c.lat,
-				uplon: c.lon,
+				upnelat: b.getNorthEast().lat,
+				upnelon: b.getNorthEast().lng,
+				upswlat: b.getSouthWest().lat,
+				upswlon: b.getSouthWest().lng,
 				format: 'json'
 			}).done(setMarkers);
 		});
 	}
 
 	_this.onLayoutReady = function() {
-		L.Icon.Default.imagePath = "../Extensions/UploadWizard/Resources/leaflet/images/";
+		L.Icon.Default.imagePath = "../extensions/UploadWizard/resources/leaflet/images";
 		var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 		var osm = new L.TileLayer(osmUrl);		
 		markers = new L.LayerGroup();
